@@ -39,6 +39,6 @@ You will see something like this in your url bar:
 
 # API Server
 
-Currently it using `https://popcorn-ru.tk` but you can change request destenation with `--domain` argument like this:
+Currently it using `https://popcorn-ru.tk` but you can change request destenation with `--domain` argument:
 
 `>popcorn --domain https://popcorn-ru.tk movie tt0485947`
