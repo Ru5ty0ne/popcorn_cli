@@ -1,6 +1,10 @@
 # popcorn_cli
 Thin "Popcorn Time" client
 
+# Download
+
+https://github.com/Ru5ty0ne/popcorn_cli/releases/
+
 # Usage
 
 Show list of available resolutions for the movie "Mr.Nobody":
@@ -32,3 +36,9 @@ You will see something like this in your url bar:
 ![Url](https://i.imgur.com/ZwFmLhW.png)
 
 `tt2861424` part is what you need.
+
+# API Server
+
+Currently it using `https://popcorn-ru.tk` but you can change request destenation with `--domain` argument like this:
+
+`>popcorn --domain https://popcorn-ru.tk movie tt0485947`
