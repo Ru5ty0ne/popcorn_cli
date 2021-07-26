@@ -23,7 +23,7 @@ Initiate download by opening magnet-link in browser:
 
 `>popcorn show tt9140554 --season 1 --episode 1 --resolution 1080p`
 
-Тоже самое, только видео будет с русской озвучкой:
+То же самое, только видео будет с русской озвучкой:
 
 `>popcorn show tt9140554 --season 1 --episode 1 --resolution 1080p --lang ru`
 
