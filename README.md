@@ -3,7 +3,7 @@ Thin "Popcorn Time" client
 
 # Usage
 
-Show list of avalible resolutions for the movie "Mr.Nobody":
+Show list of available resolutions for the movie "Mr.Nobody":
 
 `>popcorn movie tt0485947`
 
@@ -11,7 +11,7 @@ Initiate download by opening magnet-link in browser:
 
 `>popcorn movie tt0485947 --resolution 1080p`
 
-Show list of avalible resolutions for the first episode in first season of "Loki" series:
+Show list of available resolutions for the first episode in first season of "Loki" series:
 
 `>popcorn show tt9140554 --season 1 --episode 1`
 
