@@ -1,4 +1,5 @@
 use anyhow::Result;
+use nipper::Document;
 use reqwest::blocking::get;
 use serde::Deserialize;
 use std::collections::{BTreeMap, HashMap};
@@ -61,16 +62,29 @@ enum MovieRespRaw {
     Err(FailedResp),
 }
 
+static LIST_AFTER_HELP: &str = r#"EXAMPLES:
+    popcorn search "rick and morty"             List matched titles with corresponding id
+    popcorn show tt2861424                      Count seasons and episodes
+    popcorn show tt2861424 -s 1 -e 1            Show available resolutions for 1st episode of 1st season
+    popcorn show tt2861424 -s 1 -e 1 -r 1080p   Open magnet-link for chosen resolution
+    popcorn movie tt0485947                     Show available resolutions for film "Mr.Nobody"
+    popcorn movie tt0485947 -r 1080p            Open magnet-link for chosen resolution
+    popcorn movie tt0485947 -r 1080p -l ru      Video will be with Russian translation (also works with shows)
+"#;
+
 fn main() -> Result<()> {
     let m = app_from_crate!()
+        .after_help(LIST_AFTER_HELP)
         .arg(
             Arg::with_name("domain")
                 .short("d")
                 .long("domain")
-                .takes_value(true),
+                .takes_value(true)
+                .help("Choose Popcorn Time API server"),
         )
         .subcommand(
             SubCommand::with_name("show")
+                .about("Subcommand for downloading shows")
                 .arg(Arg::with_name("imdb_id").takes_value(true).required(true))
                 .arg(
                     Arg::with_name("season")
@@ -99,6 +113,7 @@ fn main() -> Result<()> {
         )
         .subcommand(
             SubCommand::with_name("movie")
+                .about("Subcommand for downloading movies")
                 .arg(Arg::with_name("imdb_id").takes_value(true).required(true))
                 .arg(
                     Arg::with_name("resolution")
@@ -112,6 +127,11 @@ fn main() -> Result<()> {
                         .long("lang")
                         .takes_value(true),
                 ),
+        )
+        .subcommand(
+            SubCommand::with_name("search")
+                .about("Subcommand for searching imdb ids")
+                .arg(Arg::with_name("query").required(true).takes_value(true)),
         )
         .get_matches();
 
@@ -167,14 +187,13 @@ fn main() -> Result<()> {
             resp.episodes
                 .retain(|x| x.episode == episode && x.season == season);
             if resp.episodes.is_empty() {
-                println!("Episode not found");
+                println!("Episode not found. Try 1st episode of current season.\nMagnet-link should contain list of all available episodes.");
                 return Ok(());
             }
 
             if let Some(torrent) = resp.episodes[0].torrents.get(&resolution) {
-                println!("Opening magnet link in default browser...");
+                println!("Opening magnet-link in default browser...");
                 webbrowser::open(&torrent.url)?;
-                return Ok(());
             } else {
                 let hint = if resolution != "?" {
                     "Selected resolution not found.\n"
@@ -190,8 +209,8 @@ fn main() -> Result<()> {
                         .filter(|x| x.contains("p"))
                         .collect::<Vec<&String>>()
                 );
-                return Ok(());
             }
+            return Ok(());
         }
     }
 
@@ -219,9 +238,8 @@ fn main() -> Result<()> {
         }
         if let Some(torrents) = resp.torrents.get(&locale) {
             if let Some(torrent) = torrents.get(&resolution) {
-                println!("Opening magnet link in default browser...");
+                println!("Opening magnet-link in default browser...");
                 webbrowser::open(&torrent.url)?;
-                return Ok(());
             } else {
                 let hint = if resolution != "?" {
                     "Selected resolution not found.\n"
@@ -236,9 +254,32 @@ fn main() -> Result<()> {
                         .filter(|x| x.contains("p"))
                         .collect::<Vec<&String>>()
                 );
-                return Ok(());
             }
+            return Ok(());
         }
+    }
+
+    if let Some(matches) = m.subcommand_matches("search") {
+        let query = matches.value_of("query").unwrap();
+        let url = format!("https://www.imdb.com/find?q={}", query);
+        let response = get(url)?;
+        let body = response.text()?;
+        let document = Document::from(&body);
+        let mut sections = document.select("div.findSection").iter().filter(|x| {
+            let header = x.select("h3.findSectionHeader").text().to_string();
+            header.as_str() == "Titles"
+        });
+        if let Some(section) = sections.next() {
+            for title in section.select(".result_text").iter() {
+                print!("{} ", &title.text().to_string());
+                let link = title.select("a").attr("href").unwrap().to_string();
+                let id: String = link.chars().skip(7).take_while(|&x| x != '/').collect();
+                println!("{}", &id);
+            }
+        } else {
+            println!("No results");
+        }
+        return Ok(());
     }
     Ok(())
 }
