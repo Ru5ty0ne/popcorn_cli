@@ -10,6 +10,7 @@ description = "Thin Popcorn Time client"
 keywords = ["cli", "popcorn"]
 categories = ["command-line-utilities", "api-bindings"]
 repository = "https://github.com/Ru5ty0ne/popcorn_cli"
+readme = './README.md'
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
