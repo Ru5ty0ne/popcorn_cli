@@ -1,6 +1,11 @@
 # popcorn_cli
 Thin "Popcorn Time" client
 
+# Install
+```
+cargo install popcorn_cli
+```
+
 # Download
 
 https://github.com/Ru5ty0ne/popcorn_cli/releases/
