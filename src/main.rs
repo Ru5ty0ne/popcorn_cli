@@ -135,7 +135,7 @@ fn main() -> Result<()> {
         )
         .get_matches();
 
-    let mut domain = String::from("https://popcorn-ru.tk");
+    let mut domain = String::from("https://popcorn-time.ga/");
     if let Some(res) = m.value_of("domain") {
         domain = res.to_string();
     }
