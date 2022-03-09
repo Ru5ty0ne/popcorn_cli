@@ -4,7 +4,7 @@ path = "src/main.rs"
 
 [package]
 name = "popcorn_cli"
-version = "0.1.1"
+version = "0.1.2"
 edition = "2018"
 description = "Thin Popcorn Time client"
 keywords = ["cli", "popcorn"]

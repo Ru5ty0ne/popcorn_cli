@@ -54,7 +54,7 @@ popcorn search "rick and morty"
 
 # API Server
 
-Currently it using `https://popcorn-ru.tk` but you can change request destenation with `--domain` argument:
+Currently it using `https://movies-api.tk` but you can change request destination with `--domain` or `-d` argument:
 ```
-popcorn --domain https://popcorn-ru.tk movie tt0485947
+popcorn --domain https://movies-api.tk movie tt0485947
 ```
